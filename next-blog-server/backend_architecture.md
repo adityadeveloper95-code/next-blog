@@ -87,6 +87,7 @@ src/
   middlewares/    # custom middleware
   utils/          # helpers
   types/          # shared types (TS)
+  index.ts        # entry point
 ```
 
 ---
@@ -199,11 +200,6 @@ src/
   * warn
   * error
 
-Future improvements:
-
-* Structured logs
-* External log aggregation
-
 ---
 
 ## 11. Security Considerations
@@ -214,24 +210,6 @@ Future improvements:
 * Input validation (Zod)
 * Secure session cookies
 * Avoid storing sensitive data in sessions
-
----
-
-## 12. Scalability
-
-* Stateless API (sessions in Redis)
-* Horizontal scaling supported
-* Load balancer compatible
-
----
-
-## 13. Future Enhancements
-
-* CSRF protection
-* API documentation (OpenAPI / Swagger)
-* Background jobs (BullMQ + Redis)
-* Caching layer (Redis)
-* Role-based access control (RBAC)
 
 ---
 
