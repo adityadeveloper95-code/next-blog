@@ -82,7 +82,7 @@ These will be designed according to the choosen session management framework.
 - Base path: `/api`
 - Content type: `application/json`
 - Auth mechanism: secure HTTP-only session cookie
-- Public endpoints: feed and blog read endpoints
+- Public endpoints: feed, blog read endpoints, and `GET /api/health`
 - Protected endpoints: create/update/delete for blogs and comments, logout, and `GET /user`
 - Blog resource keys: use `slug` for `GET /api/blog/:slug`; use `id` for blog/comment write endpoints
 - Pagination style: page + fixed page size
@@ -120,10 +120,49 @@ General guidance:
 - `404 Not Found`: resource missing
 - `409 Conflict`: uniqueness conflicts (username/slug)
 - `422 Unprocessable Entity`: validation failures
+- `503 Service Unavailable`: dependency unhealthy (for example database or Redis unreachable)
 - `500 Internal Server Error`: unexpected server error
 
 Validation convention:
 - Use `422` consistently for validation errors.
+
+---
+
+## Health Endpoint
+
+### `GET /api/health`
+
+Liveness-style check for operators and load balancers. No authentication required.
+
+The handler verifies:
+
+- **Database**: a trivial query (for example `SELECT 1`) against PostgreSQL succeeds.
+- **Redis**: a trivial operation (for example `PING` or a short-lived read) succeeds.
+
+Success response (`200 OK`) when both checks pass:
+
+```json
+{
+  "status": "ok",
+  "database": "ok",
+  "redis": "ok"
+}
+```
+
+Failure response (`503 Service Unavailable`) when either dependency fails. The payload indicates which checks failed (exact shape is implementation-defined but should be stable), for example:
+
+```json
+{
+  "status": "unavailable",
+  "database": "error",
+  "redis": "ok"
+}
+```
+
+Possible errors:
+
+- `503` if PostgreSQL or Redis is unreachable or errors during the check.
+- `500` only for unexpected failures outside those checks.
 
 ---
 
