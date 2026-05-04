@@ -8,6 +8,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 0 — Repository and toolchain
 
+**Status:** Not started
+
 - Initialize Node + TypeScript: `package.json`, `tsconfig`, optional ESLint/Prettier.
 - Scripts: `dev`, `build`, `start`, `test`, `test:watch`, `db:migrate`, `db:generate` (Prisma).
 - Test stack: **Vitest or Jest** + **Supertest** for HTTP integration tests.
@@ -18,6 +20,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 ---
 
 ## Phase 1 — Config, layout, and dependency wiring
+
+**Status:** Not started
 
 - Folder layout per architecture doc: `src/config/`, `routes/`, `controllers/`, `services/`, `db/` (Prisma), `middlewares/`, `utils/`, `types/`, `index.ts`.
 - **Environment:** validate with **Zod** in `src/config/env.ts` (fail fast on bad/missing vars).
@@ -33,6 +37,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 2 — Migrations and `GET /api/health`
 
+**Status:** Not started
+
 - Initial Prisma migration; document local Postgres workflow.
 - **`GET /api/health`:** Prisma `SELECT 1`, Redis `PING`; `200` with `{ status, database, redis }` when both succeed; `503` when either fails (per HLD).
 
@@ -42,6 +48,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 3 — User signup: `POST /api/user`
 
+**Status:** Not started
+
 - Hash passwords (bcrypt or argon2); enforce HLD limits and username `^[a-z0-9]+$`.
 - **`POST /api/user`:** `201` response body per HLD; `409` duplicate username; `422` validation with field errors.
 
@@ -50,6 +58,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 ---
 
 ## Phase 4 — Login: `POST /api/login`
+
+**Status:** Not started
 
 - Zod-validate body; verify credentials.
 - Create Redis session (`session:{sessionId}` per HLD) with `user_id`, `username`, `created_at`, `expires_at`; set HTTP-only, secure (in prod), SameSite session cookie.
@@ -61,6 +71,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 5 — Current user and logout
 
+**Status:** Not started
+
 - **`requireAuth` middleware:** load session, attach user to request.
 - **`GET /api/user`:** `200` id, name, username; **`401`** if unauthenticated.
 - **`POST /api/logout`:** destroy current session only, clear cookie; **`200`**; **`401`** if no session.
@@ -70,6 +82,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 ---
 
 ## Phase 6 — Create blog: `POST /api/blog`
+
+**Status:** Not started
 
 - **`requireAuth`:** set `user_id` from session.
 - Validate title, slug, content; enforce global slug uniqueness; slug immutable after create (enforced on create path).
@@ -81,6 +95,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 7 — Update and delete blog: `PUT /api/blog/:id`, `DELETE /api/blog/:id`
 
+**Status:** Not started
+
 - Owner-only: **`403`** if not owner; **`404`** if missing.
 - **`PUT`:** title + content only; response shape per HLD including `updated_at`.
 - **`DELETE`:** **`204`** empty body.
@@ -90,6 +106,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 ---
 
 ## Phase 8 — Public blog read: `GET /api/blog/:slug`
+
+**Status:** Not started
 
 - Public; lookup by **slug**; include **all** comments with authors (no comment pagination).
 - **`404`** if not found.
@@ -101,6 +119,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 9 — Create comment: `POST /api/blog/:id/comment`
 
+**Status:** Not started
+
 - **`requireAuth`**; blog must exist (`404`).
 - **`201`** with comment, `blog_id`, author (`id`, name, username); **`422`** content rules.
 
@@ -109,6 +129,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 ---
 
 ## Phase 10 — Update and delete comment: `PUT` / `DELETE` `/api/blog/:id/comment/:commentId`
+
+**Status:** Not started
 
 - Comment belongs to blog; only comment owner may mutate (`403` otherwise); `404` if blog or comment missing or mismatched.
 - **`PUT`:** `200` id, content, `updated_at`.
@@ -120,6 +142,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 
 ## Phase 11 — Feed: `GET /api/feed?page=<int>`
 
+**Status:** Not started
+
 - Public; fixed `page_size` (e.g. 20); `page` starts at 1; **`400`** invalid `page`.
 - Sort blogs by `created_at` DESC; each item: title, slug, `comment_count`, author, timestamps; pagination: `total_items`, `total_pages`, `items`.
 
@@ -128,6 +152,8 @@ This plan implements [`hld.md`](../hld.md) (schema, API contract, status codes) 
 ---
 
 ## Phase 12 — Hardening and ops (tentative plan)
+
+**Status:** Not started
 
 - Stricter rate limits on `/api/login` and `/api/user`.
 - Document CSRF / cookie strategy for Next.js ↔ API (SameSite, CORS, credentials).
