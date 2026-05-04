@@ -176,18 +176,11 @@ src/
 
 ## 9. Error Handling
 
-* Centralized error middleware
-* Standard response format:
-
-```
-{
-  "success": false,
-  "error": {
-    "message": "...",
-    "code": "..."
-  }
-}
-```
+* **Controllers** map validation and service/domain outcomes to HTTP status codes and bodies. Use the standard error format defined in the HLD (`message`, `errors[]` for field-level issues).
+* **Services** express failures in domain terms (no `res`, no HTTP status); they throw typed / domain errors or return results the controller interprets.
+* **Centralized error middleware** is limited to:
+  * **500** for uncaught or unexpected errors (log, safe response).
+  * **404** (or equivalent) for unmatched `/api/*` routes—generic “no such endpoint” handling.
 
 ---
 
