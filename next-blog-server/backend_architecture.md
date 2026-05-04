@@ -21,8 +21,19 @@ The system is designed to be:
 
 ### Core
 
-* Node.js
+* Node.js 22
+* TypeScript
 * Express.js
+
+### Repository / Toolchain
+
+* pnpm as the package manager
+* ESM modules (`"type": "module"`)
+* Strict TypeScript compilation
+* ESLint for static checks
+* Prettier for formatting
+* Vitest for unit and integration tests
+* Supertest for HTTP integration tests once Express routes are introduced
 
 ### Database
 
@@ -89,6 +100,8 @@ src/
   types/          # shared types (TS)
   index.ts        # entry point
 ```
+
+Test files should live close to the behavior they cover or in a top-level `test/` directory when they exercise multiple layers. Build output goes to `dist/` and must not be committed.
 
 ---
 
