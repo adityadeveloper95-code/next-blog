@@ -90,24 +90,26 @@ These will be designed according to the choosen session management framework.
 
 ### Standard Error Format
 
-The API returns validation and domain errors in this shape:
+For request validation failures, the API follows Django REST Framework serializer error format:
 
 ```json
 {
-  "message": "Validation failed",
-  "errors": [
-    {
-      "field": "name",
-      "message": "cannot be empty",
-      "value": ""
-    }
+  "name": [
+    "This field may not be blank."
+  ],
+  "username": [
+    "This field must be lowercase alphanumeric."
+  ],
+  "non_field_errors": [
+    "Unable to create user with the provided data."
   ]
 }
 ```
 
 General guidance:
-- `message` is a top-level summary.
-- `errors` contains field-level errors (especially for `express-validator`).
+- Each key is a serializer field name, and the value is an array of error messages.
+- `non_field_errors` contains object-level validation errors.
+- Error message text should remain stable and user-friendly.
 
 ### Common Status Codes
 
@@ -504,7 +506,7 @@ The system uses a simple client-server model and RESTful APIs.
 
 ### Backend
 
-The backend is a Node.js API server. PostgreSQL is the source of truth for persistent application data. Redis stores session state for cookie-based authentication. The Next.js frontend runs as a separate service and calls the API server for data operations.
+The backend is a Django API server built with Django REST Framework. PostgreSQL is the source of truth for persistent application data. Redis stores session state for cookie-based authentication. The Next.js frontend runs as a separate service and calls the API server for data operations.
 
 ### Frontend
 
